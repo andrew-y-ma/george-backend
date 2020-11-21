@@ -51,7 +51,6 @@ def query_prices():
         if match is not None:
             item_price = match.group(1)
             grocery_item_dict[item_name] = item_price
-
-    grocery_prices = soup.find_all('span', class_='product-price-analytics')
+            
     return grocery_item_dict
 
