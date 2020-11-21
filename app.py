@@ -17,7 +17,7 @@ options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
 options.add_argument('--headless')
 driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
-driver.get(URL)
+
 
 @app.route('/')
 def hello_world():
@@ -25,18 +25,14 @@ def hello_world():
 
 #testing endpoint
 @app.route('/website', methods=['GET', 'POST'])
-def upload_file():
-    # if request.method == 'POST':
-    #     return {
-    #         "hi": request.args.get('testing'),
-    #         "bye": "asdfl;kjzxcbl;"
-    #     }
-    
+def upload_file():    
     grocery_items = query_prices()
     return grocery_items
 
+#Obtains 
 def query_prices():
-    f = open("website-content.html", "w")
+    driver.get(URL)
+    f = open("website-content.html", "w") #creates local html file for testing purposes
     f.write(driver.page_source)
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -51,6 +47,6 @@ def query_prices():
         if match is not None:
             item_price = match.group(1)
             grocery_item_dict[item_name] = item_price
-            
+
     return grocery_item_dict
 
