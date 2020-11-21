@@ -18,7 +18,6 @@ options.add_argument('--incognito')
 options.add_argument('--headless')
 driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 
-
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
@@ -29,7 +28,7 @@ def upload_file():
     grocery_items = query_prices()
     return grocery_items
 
-#Obtains 
+# Obtains price data from Walmart eggs and dairy section at the moment 
 def query_prices():
     driver.get(URL)
     f = open("website-content.html", "w") #creates local html file for testing purposes
@@ -42,11 +41,12 @@ def query_prices():
     for result in results:
         match = re.search(r'<h2 class="thumb-header">([^<]*)', str(result))
         item_name = match.group(1)
-        match = re.search(r'<span>\$</span>([\d\.]*)', str(result))
+        match = re.search(r'data-bind="possibleRangedCurrencyText: { data: price, simpleFormatting: simpleFormatting } "><span>\$</span>([\d\.]*)', str(result))
 
         if match is not None:
             item_price = match.group(1)
             grocery_item_dict[item_name] = item_price
 
     return grocery_item_dict
+
 
