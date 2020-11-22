@@ -18,10 +18,12 @@ def get_metro_products(item_name):
         name = item.find('div', {'class': "pt-title"}).contents[0]
         price = item.find('div', {'class': "pi--main-price"}).div.span.contents[0]
         link = item.find('a', {'class': "pt--image product-details-link"})
+        image = item.find('img')['src']
         products.append({
             'name': name,
             'price': price,
-            'link': BASE_URL + link['href']
+            'link': BASE_URL + link['href'],
+            'image': image
         })
     
     return products

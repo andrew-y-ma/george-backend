@@ -4,6 +4,7 @@ import sys
 import os.path
 sys.path.append(os.path.join(os.path.abspath(__file__), '..'))
 from scraping.metro_parse import get_metro_products
+from scraping.tnt_parse import get_tnt_products
 
 from flask import Flask, request, jsonify
 import requests
@@ -47,7 +48,10 @@ def upload_file():
 @app.route('/products')
 def return_product_list():
     item_name = request.args.get('item_name')
-    response = jsonify(get_metro_products(item_name))
+    response = jsonify({
+        'metro': get_metro_products(item_name),
+        'tnt': get_tnt_products(item_name)
+    })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
