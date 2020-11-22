@@ -1,6 +1,7 @@
 import os
 import re
-from flask import Flask, request
+import sys
+from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -10,7 +11,7 @@ app = Flask(__name__)
 URL = "https://www.walmart.ca/en/grocery/dairy-eggs/N-3798"
 BASE_URL = "https://www.walmart.ca/"
 URL_ENDPOINT = "https://www.walmart.ca/search?q="
-CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') if os.name != 'nt' \
+CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') if sys.platform == 'darwin' \
     else os.path.abspath('./chromedriver_windows.exe')
 
 options = webdriver.ChromeOptions()
@@ -26,7 +27,9 @@ driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    response = jsonify({'data': 'Hello, world!'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 #testing endpoint
 @app.route('/website', methods=['GET', 'POST'])
