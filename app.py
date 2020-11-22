@@ -1,7 +1,6 @@
 import os
 import re
-from flask import Flask
-from flask import request
+from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -9,13 +8,10 @@ from selenium import webdriver
 app = Flask(__name__)
 
 URL = "https://www.walmart.ca/en/grocery/dairy-eggs/N-3798"
-# BASE_URL = "https://www.walmart.ca/en/grocery/international-foods/N-4356"
 BASE_URL = "https://www.walmart.ca/"
 URL_ENDPOINT = "https://www.walmart.ca/search?q="
-
-CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') #comment this line on windows
-
-# CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_windows.exe') # uncomment line on windows
+CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') if os.name != 'nt' \
+    else os.path.abspath('./chromedriver_windows.exe')
 
 options = webdriver.ChromeOptions()
 options.headless = True
@@ -63,10 +59,8 @@ def query_prices_walmart():
 
     return grocery_item_dict
 
-    #alternative approaches:
-    # takes in list of inputs 
 
-# Obtains price data from Walmart eggs and dairy section at the moment 
+# Obtains price data from term that is serached up
 def query_prices_walmart_search(search_qeury):
     url = URL_ENDPOINT + search_qeury + "&c=10019"
     driver.get(url)
