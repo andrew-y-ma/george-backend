@@ -1,6 +1,10 @@
 import os
 import re
 import sys
+import os.path
+sys.path.append(os.path.join(os.path.abspath(__file__), '..'))
+from scraping.metro_parse import get_metro_products
+
 from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
@@ -39,6 +43,13 @@ def upload_file():
     print(query)
     grocery_items = query_prices_walmart_search(query)
     return grocery_items
+
+@app.route('/products')
+def return_product_list():
+    item_name = request.args.get('item_name')
+    response = jsonify(get_metro_products(item_name))
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # Obtains price data from Walmart eggs and dairy section at the moment 
 def query_prices_walmart():
