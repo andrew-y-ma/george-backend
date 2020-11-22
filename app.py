@@ -1,7 +1,6 @@
 import os
 import re
-from flask import Flask
-from flask import request
+from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -9,7 +8,10 @@ from selenium import webdriver
 app = Flask(__name__)
 
 URL = "https://www.walmart.ca/en/grocery/dairy-eggs/N-3798"
-CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') #comment this line on windows
+CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_mac') if os.name != 'nt' \
+    else os.path.abspath('./chromedriver_windows.exe')
+
+ #comment this line on windows
 
 # CHROME_DRIVER_PATH = os.path.abspath('./chromedriver_windows.exe') # uncomment line on windows
 options = webdriver.ChromeOptions()
