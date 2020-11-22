@@ -1,7 +1,8 @@
 import os
 import re
 import sys
-import os.path
+import os
+import stripe
 sys.path.append(os.path.join(os.path.abspath(__file__), '..'))
 from scraping.metro_parse import get_metro_products
 from scraping.tnt_parse import get_tnt_products
@@ -10,8 +11,10 @@ from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 URL = "https://www.walmart.ca/en/grocery/dairy-eggs/N-3798"
 BASE_URL = "https://www.walmart.ca/"
@@ -29,6 +32,33 @@ driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
 # search_qeury = "gala%20apples"
 # url = BASE_URL + "?q=" + search_qeury + "&c=10019"
 # driver.get(url)
+stripe.api_key = os.environ['STRIPE_API_KEY']
+
+@app.route('/checkout', methods=['POST'])
+def create_checkout_session():
+    request_data = request.json
+    purchase_data = [{
+        'price_data': {
+            'currency': 'cad',
+            'product_data': {
+                'name': 'Your Groceries',
+            },
+            'unit_amount': request_data['price'],
+        },
+        'quantity': 1,
+        }]
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=purchase_data,
+        mode='payment',
+        success_url='http://localhost:3000/success',
+        cancel_url='http://localhost:3000/failure',
+    )
+
+    response = jsonify(id=session.id)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 @app.route('/')
 def hello_world():
