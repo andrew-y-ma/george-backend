@@ -5,6 +5,7 @@ BASE_URL = 'https://www.metro.ca'
 
 def get_metro_products(item_name):
     item_name.replace(' ', '+')
+    item_name.replace('%20', '+')
 
     URL_ENDPOINT = 'https://www.metro.ca/en/online-grocery/search?filter=' + item_name + '&freeText=true'
 

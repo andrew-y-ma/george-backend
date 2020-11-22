@@ -4,6 +4,7 @@ import requests
 
 def get_tnt_products(item_name):
     item_name.replace(' ', '+')
+    item_name.replace('%20', '+')
 
     URL_ENDPOINT = 'https://www.tntsupermarket.com/catalogsearch/result/?q=' + item_name
 
@@ -15,7 +16,15 @@ def get_tnt_products(item_name):
     products = []
     for item in tiles:
         name = item.find('a', {'class': "product-item-link"}).contents[0]
-        price = item.find('span', {'class': "special-price"}).contents[0]
+        # print(item)
+
+        special_price = item.find('span', {'class': "special-price"})
+
+        if len(special_price) == 1:
+            price = special_price.contents[0]
+        else:
+            price = item.find('span', {'class': "price"}).contents[0]
+
         link = item.find('a', {'class': "product-item-link"})['href']
         image = item.find('img')['src']
 
@@ -27,7 +36,7 @@ def get_tnt_products(item_name):
         })
     
     return_product = products.pop(0)
-    while "$" not in return_product['price'] and len(products) > 0:
+    while '$' not in return_product['price'] and len(products) > 0:
         return_product = products.pop(0)
 
     return return_product
