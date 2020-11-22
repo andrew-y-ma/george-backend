@@ -26,7 +26,11 @@ def get_tnt_products(item_name):
             'image': image
         })
     
-    return products
+    return_product = products.pop(0)
+    while "$" not in return_product['price'] and len(products) > 0:
+        return_product = products.pop(0)
+
+    return return_product
 
 if __name__ == "__main__":
     item_name = input('Name of item to search: ')
